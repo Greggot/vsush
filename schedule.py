@@ -1,6 +1,6 @@
 from enum import IntEnum
-from re import search
 from openpyxl import load_workbook
+from common.parse import first_number, auditory
 
 """
 Если ячейка является склеенной, вызов cell.value вернет None -
@@ -13,28 +13,6 @@ def read_value(cell):
         if cell.coordinate in merged_range:
             return sheet.cell(merged_range.min_row, merged_range.min_col).value
     return cell.value
-
-"""
-Обычно единственное значащее число в ячейке окружено текстом -
-курс, группа, номер аудитории вне пристройки
-"""
-def first_number(value):
-    if value is None:
-        return 0
-    match = search(r'\d+', value)
-    if match:
-        return match.group()
-    return value
-
-"""
-Номер аудитории состоит из числа и, возможно, одной буквы - пристройка
-"""
-def auditory(value) -> int:
-    if value is not None:
-        match = search(r'\d+[а-яА-Яa-zA-Z]?', value)
-        if match:
-            return match.group()
-    return 0
 
 """
 Проводится ли пара по числителю, знаменателю или каждую неделю
